@@ -6,7 +6,7 @@ WHITE = (255, 255, 255)
 
 FPS = 240
 
-WIDTH = 800
+WIDTH = 700
 HEIGHT = 900
 TOOLBAR_HEIGHT = HEIGHT - WIDTH
 
@@ -38,22 +38,19 @@ def create_grid(rows, cols, color):
     return grid
 
 
-def draw_gridlines(win):
+def draw_grid(win, grid):
+    row = 0
+    while row < len(grid):
+        col = 0
+        while col < len(grid[row]):
+            pygame.draw.rect(win, grid[row][col], (row * PIXEL_SIZE, col * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
+            col += 1
+        row += 1
+
     for i in range(ROWS + 1):
         pygame.draw.line(win, BLACK, (0, i * PIXEL_SIZE), (WIDTH, i * PIXEL_SIZE))
     for i in range(COLS + 1):
         pygame.draw.line(win, BLACK, (i * PIXEL_SIZE, 0), (i * PIXEL_SIZE, HEIGHT - TOOLBAR_HEIGHT))
-
-
-def draw_grid(win, grid):
-    row = 0
-    col = 0
-    while row < len(grid):
-        col = 0
-        while col < len(grid[row]):
-            pygame.draw.rect(win, grid[row][col], (row * PIXEL_SIZE, col * PIXEL_SIZE, (row + 1) * PIXEL_SIZE, (col + 1) * PIXEL_SIZE))
-            col += 1
-        row += 1
 
 
 def draw(win, grid):
@@ -62,14 +59,12 @@ def draw(win, grid):
     pygame.display.update()
 
 
-
 def main():
     clock = pygame.time.Clock()
     run = True
     mouse_down = False
 
     grid = create_grid(ROWS, COLS, (150, 0, 150))
-    draw_gridlines(WIN)
     draw_grid(WIN, grid)
     pygame.display.update()
 
@@ -89,11 +84,11 @@ def main():
                 row = x // PIXEL_SIZE
                 col = y // PIXEL_SIZE
 
-                if row < ROWS:
+                print(row, col)
+
+                if row < ROWS and col < COLS:
                     grid[row][col] = DRAW_COLOR
 
-                pygame.draw.circle(WIN, BLACK, (x, y), 5)
-                pygame.display.update()
         draw(WIN, grid)
 
     pygame.quit()
