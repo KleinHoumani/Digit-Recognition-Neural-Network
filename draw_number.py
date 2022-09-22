@@ -20,16 +20,11 @@ DRAW_COLOR = BLACK
 DRAW_GRID_LINES = False
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Number Guesser")
+pygame.display.set_caption("Number Neural Network")
 
 
 def get_font(size):
     return pygame.font.SysFont("comicsans", size)
-
-
-def draw(win):
-    win.fill(BACKGROUND_COLOR)
-    pygame.display.update()
 
 
 def create_grid(rows, cols, color):
@@ -40,12 +35,31 @@ def create_grid(rows, cols, color):
         for j in range(cols):
             grid[i].append(color)
 
+    return grid
 
-def draw_grid(win):
+
+def draw_gridlines(win):
     for i in range(ROWS + 1):
         pygame.draw.line(win, BLACK, (0, i * PIXEL_SIZE), (WIDTH, i * PIXEL_SIZE))
     for i in range(COLS + 1):
         pygame.draw.line(win, BLACK, (i * PIXEL_SIZE, 0), (i * PIXEL_SIZE, HEIGHT - TOOLBAR_HEIGHT))
+
+
+def draw_grid(win, grid):
+    row = 0
+    col = 0
+    while row < len(grid):
+        col = 0
+        while col < len(grid[row]):
+            pygame.draw.rect(win, grid[row][col], (row * PIXEL_SIZE, col * PIXEL_SIZE, (row + 1) * PIXEL_SIZE, (col + 1) * PIXEL_SIZE))
+            col += 1
+        row += 1
+
+
+def draw(win, grid):
+    win.fill(BACKGROUND_COLOR)
+    draw_grid(WIN, grid)
+    pygame.display.update()
 
 
 
@@ -54,9 +68,9 @@ def main():
     run = True
     mouse_down = False
 
-    draw(WIN)
-    grid = create_grid(ROWS, COLS, WHITE)
-    draw_grid(WIN)
+    grid = create_grid(ROWS, COLS, (150, 0, 150))
+    draw_gridlines(WIN)
+    draw_grid(WIN, grid)
     pygame.display.update()
 
     while run:
@@ -80,6 +94,7 @@ def main():
 
                 pygame.draw.circle(WIN, BLACK, (x, y), 5)
                 pygame.display.update()
+        draw(WIN, grid)
 
     pygame.quit()
 
