@@ -69,13 +69,9 @@ def create_grid(rows, cols, color):
 
 
 def draw_grid(win, grid):
-    row = 0
-    while row < len(grid):
-        col = 0
-        while col < len(grid[row]):
-            pygame.draw.rect(win, grid[row][col], (row * PIXEL_SIZE, col * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
-            col += 1
-        row += 1
+    for row in range(ROWS):
+        for col in range(COLS):
+            pygame.draw.rect(win, grid[row][col], (col * PIXEL_SIZE, row * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
 
     for i in range(ROWS + 1):
         pygame.draw.line(win, BLACK, (0, i * PIXEL_SIZE), (WIDTH, i * PIXEL_SIZE))
@@ -94,12 +90,26 @@ def draw(win, grid, buttons):
     pygame.display.update()
 
 
+def convert_to_binary(rows, cols, grid):
+    new_grid = []
+
+    for row in range(rows):
+        new_grid.append([])
+        for col in range(cols):
+            if grid[row][col] == (0, 0, 0):
+                new_grid[row].append(1)
+            else:
+                new_grid[row].append(0)
+
+    return new_grid
+
+
 def main():
     clock = pygame.time.Clock()
     run = True
     mouse_down = False
 
-    grid = create_grid(ROWS, COLS, (150, 0, 150))
+    grid = create_grid(ROWS, COLS, WHITE)
     draw_grid(WIN, grid)
     pygame.display.update()
 
@@ -123,10 +133,10 @@ def main():
 
             if mouse_down:
                 x, y = pygame.mouse.get_pos()
-                row = x // PIXEL_SIZE
-                col = y // PIXEL_SIZE
+                row = y // PIXEL_SIZE
+                col = x // PIXEL_SIZE
 
-                print(row, col)
+                convert_to_binary(ROWS, COLS, grid)
 
                 if row < ROWS and col < COLS:
                     grid[row][col] = DRAW_COLOR
