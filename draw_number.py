@@ -1,4 +1,6 @@
 import pygame
+import tensorflow as tf
+import numpy as np
 
 
 BLACK = (0, 0, 0)
@@ -42,15 +44,11 @@ class Button:
         text_surface = button_font.render(self.text, True, self.text_color)
         win.blit(text_surface, (self.x + self.width / 2 - text_surface.get_width() / 2, self.y + self.height / 2 - text_surface.get_height() / 2))
 
-    def clicked(self, pos):
-        x, y = pos
-
+    def clicked(self, x, y):
         if self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height:
             return True
         else:
             return False
-
-
 
 
 def get_font(size):
@@ -101,14 +99,16 @@ def convert_to_binary(rows, cols, grid):
             else:
                 new_grid[row].append(0)
 
+
     return new_grid
 
 
 def main():
     clock = pygame.time.Clock()
     run = True
-    mouse_down = False
 
+    mouse_down = False
+    model = tf.keras.models.load_model('num_reader')
     grid = create_grid(ROWS, COLS, WHITE)
     draw_grid(WIN, grid)
     pygame.display.update()
@@ -136,10 +136,17 @@ def main():
                 row = y // PIXEL_SIZE
                 col = x // PIXEL_SIZE
 
-                convert_to_binary(ROWS, COLS, grid)
-
                 if row < ROWS and col < COLS:
                     grid[row][col] = DRAW_COLOR
+                else:
+                    for button in buttons:
+                        if button.clicked(x, y):
+                            if button.text == 'Clear':
+                                grid = create_grid(ROWS, COLS, WHITE)
+                            if button.text == 'Predict':
+                                binary_grid = np.array(convert_to_binary(ROWS, COLS, grid))
+                                prediction = np.argmax(model.predict([binary_grid.reshape(1, 28, 28)]))
+                                print(prediction)
 
         draw(WIN, grid, buttons)
 
