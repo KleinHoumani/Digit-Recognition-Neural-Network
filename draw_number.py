@@ -76,14 +76,26 @@ def draw_grid(win, grid):
     for i in range(COLS + 1):
         pygame.draw.line(win, BLACK, (i * PIXEL_SIZE, 0), (i * PIXEL_SIZE, HEIGHT - TOOLBAR_HEIGHT))
 
+def draw_prediction(win, prediction_num):
+    prediction_text = "Prediction:"
+    prediction_font = get_font(36)
+    num_font = get_font(60)
+    text_surface = prediction_font.render(prediction_text, True, BLACK)
+    num_surface = num_font.render(prediction_num, True, BLACK)
+    win.blit(text_surface, (6 * WIDTH // 10, HEIGHT - TOOLBAR_HEIGHT // 1.75 - text_surface.get_height()))
+    win.blit(num_surface, (6 * WIDTH // 10 + text_surface.get_width() // 2 - num_surface.get_width() + 10, HEIGHT - TOOLBAR_HEIGHT // 2 + text_surface.get_height() // 2 - num_surface.get_height() + 30))
 
-def draw(win, grid, buttons):
+
+
+def draw(win, grid, buttons, prediction_num):
     win.fill(BACKGROUND_COLOR)
 
     draw_grid(WIN, grid)
 
     for button in buttons:
         button.draw(win)
+
+    draw_prediction(WIN, prediction_num)
 
     pygame.display.update()
 
@@ -99,7 +111,6 @@ def convert_to_binary(rows, cols, grid):
             else:
                 new_grid[row].append(0)
 
-
     return new_grid
 
 
@@ -109,6 +120,7 @@ def main():
 
     mouse_down = False
     model = tf.keras.models.load_model('num_reader')
+    prediction_num = ""
     grid = create_grid(ROWS, COLS, WHITE)
     draw_grid(WIN, grid)
     pygame.display.update()
@@ -146,9 +158,9 @@ def main():
                             if button.text == 'Predict':
                                 binary_grid = np.array(convert_to_binary(ROWS, COLS, grid))
                                 prediction = np.argmax(model.predict([binary_grid.reshape(1, 28, 28)]))
-                                print(prediction)
+                                prediction_num = str(prediction)
 
-        draw(WIN, grid, buttons)
+        draw(WIN, grid, buttons, prediction_num)
 
     pygame.quit()
 
