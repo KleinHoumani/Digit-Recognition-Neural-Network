@@ -40,7 +40,7 @@ class Button:
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
         pygame.draw.rect(win, self.outline_color, (self.x, self.y, self.width, self.height), 2)  # draw outline of button
 
-        button_font = get_font(22)
+        button_font = get_font(26)
         text_surface = button_font.render(self.text, True, self.text_color)
         win.blit(text_surface, (self.x + self.width / 2 - text_surface.get_width() / 2, self.y + self.height / 2 - text_surface.get_height() / 2))
 
@@ -52,7 +52,7 @@ class Button:
 
 
 def get_font(size):
-    return pygame.font.SysFont("comicsans", size)
+    return pygame.font.SysFont("calibri", size)
 
 
 def create_grid(rows, cols, color):
@@ -76,6 +76,7 @@ def draw_grid(win, grid):
     for i in range(COLS + 1):
         pygame.draw.line(win, BLACK, (i * PIXEL_SIZE, 0), (i * PIXEL_SIZE, HEIGHT - TOOLBAR_HEIGHT))
 
+
 def draw_prediction(win, prediction_num):
     prediction_text = "Prediction:"
     prediction_font = get_font(36)
@@ -84,7 +85,6 @@ def draw_prediction(win, prediction_num):
     num_surface = num_font.render(prediction_num, True, BLACK)
     win.blit(text_surface, (6 * WIDTH // 10, HEIGHT - TOOLBAR_HEIGHT // 1.75 - text_surface.get_height()))
     win.blit(num_surface, (6 * WIDTH // 10 + text_surface.get_width() // 2 - num_surface.get_width() + 10, HEIGHT - TOOLBAR_HEIGHT // 2 + text_surface.get_height() // 2 - num_surface.get_height() + 30))
-
 
 
 def draw(win, grid, buttons, prediction_num):
